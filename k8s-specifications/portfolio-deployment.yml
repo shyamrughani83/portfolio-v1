@@ -18,5 +18,5 @@ spec:
       - image: shyamr30/portfolio-v1:latest
         name: portfolio-v1
         ports:
-        - containerPort: 6000
+        - containerPort: 3000
           name: portfolio-v1
