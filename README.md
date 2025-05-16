@@ -10,7 +10,14 @@ This is my portfolio website to introduce myself, here I put my skills, projects
 - React
 - Typescript
 - Styled Components
+- Kubernetes- specification
  
 ## To run this project:
 - yarn install
 - yarn run start
+
+
+## Happy learning
+
+## Shyam Rughani 
+
