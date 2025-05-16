@@ -9,7 +9,7 @@ spec:
   ports:
   - name: "portfolio-v1-service"
     port: 6000
-    targetPort: 80
+    targetPort: 6000
     nodePort: 31003
   selector:
     app: portfolio-v1
