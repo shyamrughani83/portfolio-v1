@@ -5,7 +5,7 @@ metadata:
     app: portfolio-v1
   name: portfolio-v1
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: portfolio-v1
@@ -15,7 +15,7 @@ spec:
         app: portfolio-v1
     spec:
       containers:
-      - image: dockersamples/examplevotingapp_vote
+      - image: shyamr30/portfolio-v1:latest
         name: portfolio-v1
         ports:
         - containerPort: 80
