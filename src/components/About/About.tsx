@@ -14,7 +14,7 @@ import vueIcon from "../../assets/vue-icon.svg";
 import boostrapIcon from "../../assets/bootstrap-icon.svg";
 import ScrollAnimation from "react-animate-on-scroll";
 
-export function About() {
+export function About() { 
   return (
     <Container id="about">
       <div className="about-text">
@@ -115,7 +115,7 @@ export function About() {
       </div>
       <div className="about-image">
         <ScrollAnimation animateIn="fadeInRight" delay={0.21 * 1000}>
-          <img src={VinayakSingh} alt="Vinayak Singh" />
+          <img src={VinayakSingh} alt="Shyam Rughani" />
         </ScrollAnimation>
       </div>
     </Container>
