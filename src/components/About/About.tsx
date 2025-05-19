@@ -33,22 +33,25 @@ export function About() {
         </ScrollAnimation>
         <ScrollAnimation animateIn="fadeInLeft" delay={0.3 * 1000}>
           <p>
-            I also work with CMS platforms like WordPress and Shopify to streamline content management.
+            Have good understanding of programming languages like Python, Java, JavaScript and worked on databases like Postgresql, MySQL, MongoDB etc
           </p>
         </ScrollAnimation>
         <ScrollAnimation animateIn="fadeInLeft" delay={400}>
           <div className="education">
             <h3>Education:</h3>
-            <h4> Master of Computer Applications (MCA)</h4>
-            <p>Vellore Institute of Technology, Chennai | July 2023 - Present</p>
-            <p>8.09 CGPA</p>
+            <h4> B.Tech Computer Engineering </h4>
+            <p> Charotar University of Science and Technology (CHARUSAT)| July 2023 </p>
+            <p>7.9 CGPA</p>
           </div>
         </ScrollAnimation>
         <ScrollAnimation animateIn="fadeInLeft" delay={550}>
           <div className="experience">
              <h3>Experience:</h3><h4>Software Developer</h4>
-            <p>KIWIS AND BROWNIES IT SOLUTIONS | October 2024 - Present</p>
-            <p>Bangalore, India</p>
+            <p>Silicon It Hub Solutions| October 2024 - Present</p>
+            <p>Ahmedabad, India</p>
+            <h3>Experience:</h3><h4>Software Developer</h4>
+            <p>Simform Solutions| Jan 2023 - August-2024</p>
+            <p>Ahmedabad, India</p>
           </div>
         </ScrollAnimation>
 
