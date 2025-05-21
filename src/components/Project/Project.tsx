@@ -19,22 +19,21 @@ export function Project() {
                 <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
               </svg>
               <div className="project-links">
-                <a href="https://github.com/CodeVinayak/MultilingualVQA" target="_blank" rel="noreferrer">
+                <a href="https://github.com/shyamrughani83/voting-app" target="_blank" rel="noreferrer">
                   <img src={githubIcon} alt="GitHub" />
                 </a>
               </div>
             </header>
             <div className="body">
-              <h3>Multilingual VQA Vision-Language Model</h3>
+              <h3>Voting-App</h3>
               <p>
-                Fine-tuned Qwen2.5-VL for visual question answering across 14 languages with optimized preprocessing.
+                This project build with the 3 texact which is node, react and database (Postgresql).It contains the voting that will declare whoc will Win.
               </p>
             </div>
             <footer>
               <ul className="tech-list">
-                <li>Python</li>
-                <li>Qwen2.5-VL</li>
-                <li>Unsloth</li>
+                <li>Nodejs</li>
+                <li>Reactjs & Postgresql</li>
               </ul>
             </footer>
           </div>
@@ -65,23 +64,22 @@ export function Project() {
             <header>
               <svg width="50" xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 24 24" fill="none" stroke="#23ce6b " strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><title>Folder</title> <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path> </svg>
               <div className="project-links">
-                <a href="https://github.com/CodeVinayak/AI-Chatbot-Assistant" target="_blank" rel="noreferrer">
+                <a href="https://github.com/shyamrughani83/portfolio-v1" target="_blank" rel="noreferrer">
                   <img src={githubIcon} alt="Visit site" /> </a>
                 <a href="https://ai-chatbot-t8fn.onrender.com" target="_blank" rel="noreferrer">
                   <img src={externalLink} alt="Visit site" /></a>
               </div>
             </header>
             <div className="body">
-              <h3>GeniusBot: AI-Powered Assistance with PDF Insight</h3>
+              <h3>Portfolio-v1</h3>
               <p>
-                Developed an interactive chatbot application using Streamlit, OpenAI's GPT-3.5-turbo language model, and PyPDF2 for PDF text extraction, enabling users to ask context-based questions on uploaded PDFs and general queries.
-              </p>
+                Developed an interactive portfolio that contains whole Details, github project and the amazing features like theme.. etc                </p>
             </div>
             <footer>
               <ul className="tech-list">
-                <li>Streamlit</li>
-                <li>PyPDF2</li>
-                <li>LangChain</li>
+                <li>Typescript</li>
+                <li>React</li>
+                <li>Kubernetes</li>
               </ul>
             </footer>
           </div>
