@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - portfolio-deployment.yml
+  - portfolio-service.yml
+  - portfolio-configmap.yml
+  - portfolio-ingress.yml
+  - portfolio-hpa.yml
+
+namespace: portfolio
+
+commonLabels:
+  app: portfolio-v1
+  environment: production
