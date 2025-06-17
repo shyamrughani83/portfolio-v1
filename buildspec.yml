@@ -3,7 +3,16 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      docker: latest
+      nodejs: 18
+    commands:
+      - echo Installing dependencies...
+      - apt-get update
+      - apt-get install -y jq python3-pip
+      - pip3 install --upgrade awscli
+      - pip3 install cfn-lint checkov
+      - npm install -g snyk
+      - curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
+
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
@@ -11,23 +20,59 @@ phases:
       - REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ECR_REPOSITORY_NAME
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=${COMMIT_HASH:=latest}
-      - echo Running security scans...
+
+      # Static code analysis and security scanning
+      - echo Running security scans on source code...
       - docker run --rm -v $(pwd):/app trufflesecurity/trufflehog:latest github --repo=https://github.com/shyamrughani83/portfolio-v1.git --only-verified || true
+      - echo Running SAST scan with Snyk...
+      - snyk test --severity-threshold=high || true
+
+      # Infrastructure as Code scanning
+      - echo Scanning IaC files...
+      - find . -name "*.tf" -type f -exec echo Scanning {} \; -exec checkov -f {} --quiet || true \;
+      - find . -name "*.yaml" -o -name "*.yml" -type f -exec echo Scanning {} \; -exec cfn-lint {} || true \;
+
+      # License compliance check
+      - echo Checking for license compliance...
+      - if [ -f package.json ]; then npm audit || true; fi
+
   build:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
       - docker build -t $REPOSITORY_URI:latest .
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+
+      # Container security scanning (Grype only)
+      - echo Running container security scans with Grype...
+      - grype $REPOSITORY_URI:latest -o json > container-vulnerabilities.json || true
+
+      # Run unit tests if they exist
+      - echo Running unit tests...
+      - if [ -f package.json ] && grep -q "test" package.json; then npm test || echo "Tests failed but continuing build"; fi
+
+      # Build quality checks
+      - echo Running quality checks...
+      - if [ -f package.json ] && grep -q "lint" package.json; then npm run lint || echo "Linting issues found but continuing build"; fi
+
   post_build:
     commands:
       - echo Build completed on `date`
+
+      # Security scan results processing
+      - echo Processing security scan results...
+      - if [ -f container-vulnerabilities.json ]; then jq '.matches | length' container-vulnerabilities.json > vulnerability-count.txt; fi
+
+      # Push Docker image to ECR
       - echo Pushing the Docker image...
       - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$IMAGE_TAG
+
+      # Create deployment artifacts
       - echo Writing image definitions file...
       - aws ecs describe-task-definition --task-definition $ECS_TASK_DEFINITION --query taskDefinition > task-definition.json
       - envsubst < task-definition.json > task-def.json
+
       - echo Creating appspec.yaml for ECS deployment...
       - |
         cat > appspec.yaml <<EOF
@@ -41,16 +86,55 @@ phases:
                   ContainerName: "$CONTAINER_NAME"
                   ContainerPort: $CONTAINER_PORT
         EOF
+
       - echo Setting image URI in task definition...
-      - sed -i "s|\"image\": \".*\"|\"image\": \"$REPOSITORY_URI:$IMAGE_TAG\"|g" task-def.json
+      - |
+        sed -i "s|\\\"image\\\": \\\".*\\\"|\\\"image\\\": \\\"$REPOSITORY_URI:$IMAGE_TAG\\\"|g" task-def.json
+
+      - echo Creating imagedefinitions.json...
+      - echo "[{\"name\":\"$CONTAINER_NAME\",\"imageUri\":\"$REPOSITORY_URI:$IMAGE_TAG\"}]" > imagedefinitions.json
+
+      # Generate build report
+      - echo Generating build report...
+      - |
+        cat > build-report.md <<EOF
+        # Build Report
+
+        - **Build Date:** $(date)
+        - **Commit Hash:** $COMMIT_HASH
+        - **Image Tag:** $IMAGE_TAG
+        - **Repository:** $REPOSITORY_URI
+
+        ## Security Scan Results
+
+        - See attached vulnerability reports
+
+        ## Deployment Information
+
+        - **ECS Task Definition:** $ECS_TASK_DEFINITION
+        - **Container Name:** $CONTAINER_NAME
+        - **Container Port:** $CONTAINER_PORT
+        EOF
 
 artifacts:
   files:
     - appspec.yaml
     - task-def.json
     - imagedefinitions.json
+    - build-report.md
+    - container-vulnerabilities.json
+    - vulnerability-count.txt
+  discard-paths: no
 
 cache:
   paths:
     - '/root/.m2/**/*'
     - '/root/.npm/**/*'
+    - '/root/.cache/pip/**/*'
+    - '/usr/local/lib/node_modules/**/*'
+
+reports:
+  security-reports:
+    files:
+      - container-vulnerabilities.json
+    file-format: JunitXml
